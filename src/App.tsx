@@ -149,7 +149,7 @@ export default function App() {
             ref={fileInputRef}
             onChange={onFileSelect}
             multiple
-            accept="image/*"
+            accept="image/*,application/pdf"
             className="hidden"
           />
         </div>
@@ -181,7 +181,7 @@ export default function App() {
               <Upload size={24} />
             </div>
             <h3 className="font-semibold text-slate-900">Drop receipts here</h3>
-            <p className="text-sm text-slate-500 mt-1">or click to browse from your device</p>
+            <p className="text-sm text-slate-500 mt-1">Images or PDF files supported</p>
             <button 
               onClick={() => fileInputRef.current?.click()}
               className="mt-4 text-sm font-medium text-indigo-600 hover:text-indigo-700"
@@ -213,13 +213,17 @@ export default function App() {
                       exit={{ opacity: 0, x: -20 }}
                       className="bg-white border border-slate-200 rounded-lg p-3 flex items-center gap-3 group"
                     >
-                      <div className="relative w-12 h-12 rounded overflow-hidden bg-slate-100 flex-shrink-0">
-                        <img 
-                          src={fileItem.preview} 
-                          alt="preview" 
-                          className="w-full h-full object-cover"
-                          referrerPolicy="no-referrer"
-                        />
+                      <div className="relative w-12 h-12 rounded overflow-hidden bg-slate-100 flex-shrink-0 flex items-center justify-center">
+                        {fileItem.file.type === 'application/pdf' ? (
+                          <FileText size={24} className="text-indigo-500" />
+                        ) : (
+                          <img 
+                            src={fileItem.preview} 
+                            alt="preview" 
+                            className="w-full h-full object-cover"
+                            referrerPolicy="no-referrer"
+                          />
+                        )}
                         {fileItem.status === 'processing' && (
                           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                             <Loader2 size={16} className="text-white animate-spin" />
