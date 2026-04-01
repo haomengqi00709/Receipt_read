@@ -1,0 +1,5 @@
+{
+  "name": "Receipt to Excel Converter",
+  "description": "Batch upload receipts and travel documents to automatically extract data and export to Excel.",
+  "requestFramePermissions": []
+}
