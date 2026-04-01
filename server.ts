@@ -1,5 +1,13 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 import { GoogleGenAI, Type } from "@google/genai";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const app = express();
+const PORT = parseInt(process.env.PORT || "3001", 10);
+
+app.use(express.json({ limit: "50mb" }));
 
 const receiptSchema = {
   type: Type.OBJECT,
@@ -30,11 +38,7 @@ const receiptSchema = {
   required: ["date", "merchant", "category", "amount", "currency"],
 };
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
+app.post("/api/analyze-receipt", async (req, res) => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: "GEMINI_API_KEY is not configured" });
@@ -58,10 +62,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               text: "Analyze this receipt and extract the details into the specified JSON format. If you can't find a specific field, make your best guess based on context.",
             },
             {
-              inlineData: {
-                data: base64Image,
-                mimeType,
-              },
+              inlineData: { data: base64Image, mimeType },
             },
           ],
         },
@@ -80,4 +81,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .status(500)
       .json({ error: e.message || "Failed to analyze receipt" });
   }
-}
+});
+
+// Serve Vite build output
+app.use(express.static(path.join(__dirname, "dist")));
+app.get("*", (_req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+});
