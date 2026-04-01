@@ -103,8 +103,9 @@ export default function App() {
         'Date': f.data!.date,
         'Merchant': f.data!.merchant,
         'Category': f.data!.category,
-        'Amount': f.data!.amount,
+        'Cost Before GST': f.data!.costBeforeGst,
         'GST': f.data!.gst,
+        'Total': f.data!.total,
         'Currency': f.data!.currency,
         'Description': f.data!.description,
       }));
@@ -118,8 +119,9 @@ export default function App() {
   };
 
   const completedFiles = files.filter(f => f.status === 'completed' && f.data);
-  const totalAmount = completedFiles.reduce((sum, f) => sum + (f.data?.amount || 0), 0);
+  const totalCostBeforeGst = completedFiles.reduce((sum, f) => sum + (f.data?.costBeforeGst || 0), 0);
   const totalGst = completedFiles.reduce((sum, f) => sum + (f.data?.gst || 0), 0);
+  const totalAmount = completedFiles.reduce((sum, f) => sum + (f.data?.total || 0), 0);
 
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-6xl mx-auto">
@@ -276,8 +278,9 @@ export default function App() {
               </div>
               {totalAmount > 0 && (
                 <div className="flex gap-4 text-sm font-medium text-slate-600">
-                  <span>Total: <span className="text-indigo-600 font-bold">{totalAmount.toFixed(2)}</span></span>
+                  <span>Before GST: <span className="text-slate-800 font-bold">{totalCostBeforeGst.toFixed(2)}</span></span>
                   <span>GST: <span className="text-emerald-600 font-bold">{totalGst.toFixed(2)}</span></span>
+                  <span>Total: <span className="text-indigo-600 font-bold">{totalAmount.toFixed(2)}</span></span>
                 </div>
               )}
             </div>
@@ -290,8 +293,9 @@ export default function App() {
                       <th className="px-6 py-3 border-b border-slate-100">Date</th>
                       <th className="px-6 py-3 border-b border-slate-100">Merchant</th>
                       <th className="px-6 py-3 border-b border-slate-100">Category</th>
-                      <th className="px-6 py-3 border-b border-slate-100 text-right">Amount</th>
+                      <th className="px-6 py-3 border-b border-slate-100 text-right">Before GST</th>
                       <th className="px-6 py-3 border-b border-slate-100 text-right">GST</th>
+                      <th className="px-6 py-3 border-b border-slate-100 text-right">Total</th>
                       <th className="px-6 py-3 border-b border-slate-100">Currency</th>
                     </tr>
                   </thead>
@@ -316,10 +320,13 @@ export default function App() {
                           </span>
                         </td>
                         <td className="px-6 py-4 text-sm font-mono font-medium text-slate-900 text-right">
-                          {fileItem.data?.amount.toFixed(2)}
+                          {fileItem.data?.costBeforeGst.toFixed(2)}
                         </td>
-                        <td className="px-6 py-4 text-sm font-mono font-medium text-slate-900 text-right">
+                        <td className="px-6 py-4 text-sm font-mono font-medium text-emerald-700 text-right">
                           {fileItem.data?.gst.toFixed(2)}
+                        </td>
+                        <td className="px-6 py-4 text-sm font-mono font-bold text-slate-900 text-right">
+                          {fileItem.data?.total.toFixed(2)}
                         </td>
                         <td className="px-6 py-4 text-sm text-slate-500 font-medium">
                           {fileItem.data?.currency}

@@ -25,7 +25,10 @@ const receiptSchema = {
       enum: ["Dining", "Travel", "Supplies", "Other"],
       description: "Category of the expense",
     },
-    amount: { type: Type.NUMBER, description: "Total amount spent" },
+    total: {
+      type: Type.NUMBER,
+      description: "The final total amount on the receipt (inclusive of all taxes)",
+    },
     gst: {
       type: Type.NUMBER,
       description:
@@ -40,7 +43,7 @@ const receiptSchema = {
       description: "Brief description of what was purchased",
     },
   },
-  required: ["date", "merchant", "category", "amount", "gst", "currency"],
+  required: ["date", "merchant", "category", "total", "gst", "currency"],
 };
 
 app.get("/api/health", (_req, res) => {
@@ -89,8 +92,9 @@ app.post("/api/analyze-receipt", async (req, res) => {
     });
 
     const data = JSON.parse(result.text || "{}");
+    const costBeforeGst = parseFloat((data.total - data.gst).toFixed(2));
     console.log("Receipt processed successfully:", data.merchant);
-    return res.status(200).json(data);
+    return res.status(200).json({ ...data, costBeforeGst });
   } catch (e: any) {
     console.error("Gemini API error:", e?.message || e);
     return res

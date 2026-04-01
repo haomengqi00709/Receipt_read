@@ -2,8 +2,9 @@ export interface ReceiptData {
   date: string;
   merchant: string;
   category: "Dining" | "Travel" | "Supplies" | "Other";
-  amount: number;
+  costBeforeGst: number;
   gst: number;
+  total: number;
   currency: string;
   description: string;
 }
