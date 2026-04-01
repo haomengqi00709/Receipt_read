@@ -104,6 +104,7 @@ export default function App() {
         'Merchant': f.data!.merchant,
         'Category': f.data!.category,
         'Amount': f.data!.amount,
+        'GST': f.data!.gst,
         'Currency': f.data!.currency,
         'Description': f.data!.description,
       }));
@@ -116,9 +117,9 @@ export default function App() {
     XLSX.writeFile(wb, `Receipts_Export_${new Date().toISOString().split('T')[0]}.xlsx`);
   };
 
-  const totalAmount = files
-    .filter(f => f.status === 'completed' && f.data)
-    .reduce((sum, f) => sum + (f.data?.amount || 0), 0);
+  const completedFiles = files.filter(f => f.status === 'completed' && f.data);
+  const totalAmount = completedFiles.reduce((sum, f) => sum + (f.data?.amount || 0), 0);
+  const totalGst = completedFiles.reduce((sum, f) => sum + (f.data?.gst || 0), 0);
 
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-6xl mx-auto">
@@ -274,8 +275,9 @@ export default function App() {
                 <h2 className="font-semibold text-slate-900">Extracted Data</h2>
               </div>
               {totalAmount > 0 && (
-                <div className="text-sm font-medium text-slate-600">
-                  Total: <span className="text-indigo-600 font-bold">{totalAmount.toFixed(2)}</span>
+                <div className="flex gap-4 text-sm font-medium text-slate-600">
+                  <span>Total: <span className="text-indigo-600 font-bold">{totalAmount.toFixed(2)}</span></span>
+                  <span>GST: <span className="text-emerald-600 font-bold">{totalGst.toFixed(2)}</span></span>
                 </div>
               )}
             </div>
@@ -289,6 +291,7 @@ export default function App() {
                       <th className="px-6 py-3 border-b border-slate-100">Merchant</th>
                       <th className="px-6 py-3 border-b border-slate-100">Category</th>
                       <th className="px-6 py-3 border-b border-slate-100 text-right">Amount</th>
+                      <th className="px-6 py-3 border-b border-slate-100 text-right">GST</th>
                       <th className="px-6 py-3 border-b border-slate-100">Currency</th>
                     </tr>
                   </thead>
@@ -314,6 +317,9 @@ export default function App() {
                         </td>
                         <td className="px-6 py-4 text-sm font-mono font-medium text-slate-900 text-right">
                           {fileItem.data?.amount.toFixed(2)}
+                        </td>
+                        <td className="px-6 py-4 text-sm font-mono font-medium text-slate-900 text-right">
+                          {fileItem.data?.gst.toFixed(2)}
                         </td>
                         <td className="px-6 py-4 text-sm text-slate-500 font-medium">
                           {fileItem.data?.currency}

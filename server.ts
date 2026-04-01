@@ -26,16 +26,21 @@ const receiptSchema = {
       description: "Category of the expense",
     },
     amount: { type: Type.NUMBER, description: "Total amount spent" },
+    gst: {
+      type: Type.NUMBER,
+      description:
+        "GST (Goods and Services Tax) amount only. Do NOT include other taxes. Return 0 if no GST is found on the receipt.",
+    },
     currency: {
       type: Type.STRING,
-      description: "Currency code (e.g., USD, CNY, EUR)",
+      description: "Currency code (e.g., USD, CNY, EUR, SGD, AUD)",
     },
     description: {
       type: Type.STRING,
       description: "Brief description of what was purchased",
     },
   },
-  required: ["date", "merchant", "category", "amount", "currency"],
+  required: ["date", "merchant", "category", "amount", "gst", "currency"],
 };
 
 app.get("/api/health", (_req, res) => {

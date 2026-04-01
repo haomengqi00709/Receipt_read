@@ -3,6 +3,7 @@ export interface ReceiptData {
   merchant: string;
   category: "Dining" | "Travel" | "Supplies" | "Other";
   amount: number;
+  gst: number;
   currency: string;
   description: string;
 }
