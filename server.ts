@@ -38,9 +38,17 @@ const receiptSchema = {
   required: ["date", "merchant", "category", "amount", "currency"],
 };
 
+app.get("/api/health", (_req, res) => {
+  res.json({
+    status: "ok",
+    hasApiKey: !!process.env.GEMINI_API_KEY,
+  });
+});
+
 app.post("/api/analyze-receipt", async (req, res) => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
+    console.error("GEMINI_API_KEY is not set in environment variables");
     return res.status(500).json({ error: "GEMINI_API_KEY is not configured" });
   }
 
@@ -51,10 +59,12 @@ app.post("/api/analyze-receipt", async (req, res) => {
       .json({ error: "base64Image and mimeType are required" });
   }
 
+  console.log(`Processing receipt: mimeType=${mimeType}, imageSize=${base64Image.length} chars`);
+
   try {
     const ai = new GoogleGenAI({ apiKey });
     const result = await ai.models.generateContent({
-      model: "gemini-2.5-flash-preview-04-17",
+      model: "gemini-2.0-flash",
       contents: [
         {
           parts: [
@@ -74,9 +84,10 @@ app.post("/api/analyze-receipt", async (req, res) => {
     });
 
     const data = JSON.parse(result.text || "{}");
+    console.log("Receipt processed successfully:", data.merchant);
     return res.status(200).json(data);
   } catch (e: any) {
-    console.error("Gemini API error:", e);
+    console.error("Gemini API error:", e?.message || e);
     return res
       .status(500)
       .json({ error: e.message || "Failed to analyze receipt" });
@@ -91,4 +102,5 @@ app.get("*", (_req, res) => {
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`GEMINI_API_KEY: ${process.env.GEMINI_API_KEY ? "SET" : "NOT SET"}`);
 });
