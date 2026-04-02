@@ -124,7 +124,7 @@ export default function App() {
   const totalAmount = completedFiles.reduce((sum, f) => sum + (f.data?.total || 0), 0);
 
   return (
-    <div className="min-h-screen p-4 md:p-8 max-w-6xl mx-auto">
+    <div className="min-h-screen p-4 md:p-8 max-w-[1400px] mx-auto">
       <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">Receipt Batcher</h1>
@@ -158,7 +158,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Upload & Preview Section */}
         <div className="lg:col-span-1 space-y-6">
           <div 
@@ -269,7 +269,7 @@ export default function App() {
         </div>
 
         {/* Data View Section */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-3">
           <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden min-h-[500px] flex flex-col">
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <div className="flex items-center gap-2">
@@ -287,28 +287,28 @@ export default function App() {
 
             <div className="flex-1 overflow-x-auto">
               {files.some(f => f.status === 'completed') ? (
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse min-w-[700px]">
                   <thead>
                     <tr className="text-xs font-bold text-slate-500 uppercase tracking-wider bg-slate-50">
-                      <th className="px-6 py-3 border-b border-slate-100">Date</th>
-                      <th className="px-6 py-3 border-b border-slate-100">Merchant</th>
-                      <th className="px-6 py-3 border-b border-slate-100">Category</th>
-                      <th className="px-6 py-3 border-b border-slate-100 text-right">Before GST</th>
-                      <th className="px-6 py-3 border-b border-slate-100 text-right">GST</th>
-                      <th className="px-6 py-3 border-b border-slate-100 text-right">Total</th>
-                      <th className="px-6 py-3 border-b border-slate-100">Currency</th>
+                      <th className="px-4 py-3 border-b border-slate-100">Date</th>
+                      <th className="px-4 py-3 border-b border-slate-100">Merchant</th>
+                      <th className="px-4 py-3 border-b border-slate-100">Category</th>
+                      <th className="px-4 py-3 border-b border-slate-100 text-right">Before GST</th>
+                      <th className="px-4 py-3 border-b border-slate-100 text-right">GST</th>
+                      <th className="px-4 py-3 border-b border-slate-100 text-right">Total</th>
+                      <th className="px-4 py-3 border-b border-slate-100">Currency</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {files.filter(f => f.status === 'completed' && f.data).map((fileItem) => (
                       <tr key={fileItem.id} className="hover:bg-slate-50/50 transition-colors group">
-                        <td className="px-6 py-4 text-sm text-slate-600 whitespace-nowrap">
+                        <td className="px-4 py-3 text-sm text-slate-600 whitespace-nowrap">
                           {fileItem.data?.date}
                         </td>
-                        <td className="px-6 py-4 text-sm font-medium text-slate-900">
+                        <td className="px-4 py-3 text-sm font-medium text-slate-900">
                           {fileItem.data?.merchant}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-4 py-3">
                           <span className={cn(
                             "text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider",
                             fileItem.data?.category === 'Dining' && "bg-orange-100 text-orange-700",
@@ -319,16 +319,16 @@ export default function App() {
                             {fileItem.data?.category}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-sm font-mono font-medium text-slate-900 text-right">
+                        <td className="px-4 py-3 text-sm font-mono font-medium text-slate-900 text-right whitespace-nowrap">
                           {fileItem.data?.costBeforeGst.toFixed(2)}
                         </td>
-                        <td className="px-6 py-4 text-sm font-mono font-medium text-emerald-700 text-right">
+                        <td className="px-4 py-3 text-sm font-mono font-medium text-emerald-700 text-right whitespace-nowrap">
                           {fileItem.data?.gst.toFixed(2)}
                         </td>
-                        <td className="px-6 py-4 text-sm font-mono font-bold text-slate-900 text-right">
+                        <td className="px-4 py-3 text-sm font-mono font-bold text-slate-900 text-right whitespace-nowrap">
                           {fileItem.data?.total.toFixed(2)}
                         </td>
-                        <td className="px-6 py-4 text-sm text-slate-500 font-medium">
+                        <td className="px-4 py-3 text-sm text-slate-500 font-medium">
                           {fileItem.data?.currency}
                         </td>
                       </tr>
